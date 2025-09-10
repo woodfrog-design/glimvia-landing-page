@@ -747,7 +747,7 @@ export default function Navbar() {
     const events: (keyof WindowEventMap)[] = ["mousemove", "pointermove", "keydown", "scroll", "pointerdown", "wheel", "touchstart"];
     events.forEach((e) => window.addEventListener(e, onActivity, { passive: true }));
     return () => events.forEach((e) => window.removeEventListener(e, onActivity));
-  }, []);
+  }, [cancelIdle]);
 
   const ctaClass = clsx(
     "glow-cta cta-shine rounded-full px-3.5 py-1.5 text-sm transition shadow-sm hover:opacity-95 active:scale-[.98]",

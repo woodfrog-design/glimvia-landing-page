@@ -1,24 +1,7 @@
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//   reactStrictMode: true,
-//   swcMinify: true,
-//   experimental: {
-//     optimizePackageImports: ['framer-motion', 'lucide-react'],
-//   },
-//   images: {
-//     formats: ['image/webp', 'image/avif'],
-//   },
-// }
-
-// export default nextConfig
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove static export for server-side features
-  // output: 'export', // Commented out - use SSR for better performance
   trailingSlash: true,
   images: {
-    // unoptimized: true, // Not needed without static export
     domains: [], // Add image domains if needed
   },
   
@@ -70,4 +53,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;  // ES module syntax, not module.exports

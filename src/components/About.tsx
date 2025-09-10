@@ -87,7 +87,7 @@ export default function About() {
                 Glimvia at a glance
               </h2>
               <p className="text-sm md:text-sm text-gray-600 dark:text-gray-300 max-w-xl">
-                Experience the power of Apache Superset redesigned for mobile. See how we've reimagined analytics for the modern, mobile-first world.
+                Experience the power of Apache Superset redesigned for mobile. See how we&apos;ve reimagined analytics for the modern, mobile-first world.
               </p>
             </div>
 
