@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* ============================ */
 /* Design Tokens                */
@@ -82,19 +84,13 @@ section[id] {
 }
 
 .glass {
-  /* background: hsl(var(--glass-h));
+  background: hsl(var(--glass-h));
   -webkit-backdrop-filter: saturate(140%) blur(12px);
   backdrop-filter: saturate(140%) blur(12px);
   outline: 1px solid hsl(var(--glass-border));
   box-shadow: var(--glass-shadow);
-  */
-  .glass {
-  background: hsl(var(--glass-h));  /* Light: white/42%, Dark: slate/50% */
-  backdrop-filter: saturate(140%) blur(12px);
-  outline: 1px solid hsl(var(--glass-border));
-  box-shadow: var(--glass-shadow);
 }
-} 
+
 .glass-nav { 
   background: hsl(0 0% 100% / .38); 
 }

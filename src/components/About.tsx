@@ -1,260 +1,173 @@
-// last working version
-// "use client";
-
-// import { useState, useEffect, useRef } from "react";
-// import { motion, useScroll } from "framer-motion";
-// import clsx from "clsx";
-// import { aboutSlides } from "./about/aboutData";
-// import PhoneMock from "./PhoneMock";
-
-// export default function About() {
-//   const sectionRef = useRef<HTMLDivElement>(null);
-//   const [activeIndex, setActiveIndex] = useState(0);
-
-//   // Use the useScroll hook to track scroll progress within the tall section
-//   const { scrollYProgress } = useScroll({
-//     target: sectionRef,
-//     offset: ["start start", "end end"], // Track from start to end
-//   });
-
-//   // When the scroll progress changes, update the active card index
-//   useEffect(() => {
-//     const unsubscribe = scrollYProgress.on("change", (latestValue) => {
-//       const newIndex = Math.floor(latestValue * aboutSlides.length);
-//       setActiveIndex(Math.min(aboutSlides.length - 1, newIndex)); // Ensure index doesn't go out of bounds
-//     });
-//     return () => unsubscribe(); // Cleanup listener on component unmount
-//   }, [scrollYProgress]);
-
-//   const activeSlide = aboutSlides[activeIndex];
-//   const Icon = activeSlide.icon;
-
-//   return (
-//     <section 
-//       id="about" 
-//       ref={sectionRef} 
-//       className="relative" 
-//       // The section is made very tall to create a "scroll runway" for the animation
-//       style={{ height: `${aboutSlides.length * 100}vh` }}
-//     >
-//       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-//         <div className="mx-auto flex w-full max-w-7xl items-center gap-8 px-4 md:px-6">
-          
-//           {/* Left Column (60%): Cards and Controls */}
-//           <div className="flex h-full basis-3/5 flex-col justify-center py-12">
-//             {/* The active card is displayed here, based on the scroll position */}
-//             <motion.div
-//               key={activeIndex} // Re-trigger animation when index changes
-//               initial={{ opacity: 0 }}
-//               animate={{ opacity: 1 }}
-//               transition={{ duration: 0.5 }}
-//               className="w-full"
-//             >
-//               <div className="rounded-2xl bg-white/70 p-6 shadow-xl backdrop-blur-lg dark:bg-slate-900/60 md:p-8">
-//                 <div className="mb-4 flex items-center gap-3">
-//                   <span className="inline-flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-200 via-violet-200 to-pink-200 dark:from-sky-500/25 dark:via-violet-500/25 dark:to-pink-500/25">
-//                     <Icon className="size-4 text-slate-700 dark:text-slate-200" />
-//                   </span>
-//                   <span className="text-[11px] font-semibold uppercase tracking-widest opacity-80">
-//                     {activeSlide.title}
-//                   </span>
-//                 </div>
-//                 <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50 md:text-3xl">
-//                   {activeSlide.title}
-//                 </h3>
-//                 <p className="mt-3 text-base leading-relaxed opacity-90 md:text-lg">{activeSlide.body}</p>
-//               </div>
-//             </motion.div>
-//           </div>
-
-//           {/* Right Column (40%): Phone Mockup */}
-//           <div className="relative hidden h-full basis-2/5 items-center justify-center md:flex">
-//             <div className="h-[80vh] max-h-[650px] w-full p-4">
-//               <PhoneMock
-//                 screens={aboutSlides.map((s) => ({ id: s.id, title: s.title, shot: s.image }))}
-//                 activeIndex={activeIndex}
-//                 className="h-full"
-//                 tilt={3}
-//               />
-//             </div>
-//           </div>
-//         </div>
-        
-//         {/* Status Dots */}
-//         <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
-//           <div className="flex items-center gap-2">
-//             {aboutSlides.map((_, i) => (
-//               <div
-//                 key={i}
-//                 className={clsx(
-//                   "h-2 rounded-full transition-all duration-300",
-//                   activeIndex === i ? "w-6 bg-sky-500" : "w-2 bg-slate-400/60"
-//                 )}
-//               />
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useMotionValue, animate } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll } from "framer-motion";
+import clsx from "clsx";
 import { aboutSlides } from "./about/aboutData";
-import PhoneMock from "./PhoneMock";
+import PhoneMock from "./about/PhoneMock";
 
 export default function About() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const x = useMotionValue(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isScrollControlled, setIsScrollControlled] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout>();
 
-  // Track scroll progress for scroll-driven animation
+  // Create a scroll runway - total height for all slides
+  const totalHeight = aboutSlides.length * 100;
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  // Auto-play functionality
+  // Handle scroll-based control
   useEffect(() => {
-    if (isPaused) return;
-    
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => {
-        const next = (prev + 1) % aboutSlides.length;
-        animate(x, `-${100 * next}%`, {
-          duration: 0.8,
-          ease: "easeInOut"
-        });
-        return next;
-      });
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [isPaused, x]);
-
-  // Manual scroll override
-  useEffect(() => {
-    const unsubscribe = scrollYProgress.on("change", (latest) => {
-      if (latest > 0.01 && latest < 0.99) {
-        const index = Math.min(
-          aboutSlides.length - 1,
-          Math.floor(latest * aboutSlides.length)
-        );
-        setCurrentIndex(index);
-        x.set(`-${100 * index}%`);
+    const unsubscribe = scrollYProgress.on("change", (progress) => {
+      if (progress > 0 && progress < 1) {
+        setIsScrollControlled(true);
+        const slideIndex = Math.floor(progress * aboutSlides.length);
+        const clampedIndex = Math.min(Math.max(slideIndex, 0), aboutSlides.length - 1);
+        setActiveIndex(clampedIndex);
+      } else {
+        setIsScrollControlled(false);
       }
     });
+
     return unsubscribe;
-  }, [scrollYProgress, x]);
+  }, [scrollYProgress]);
+
+  // Autoplay functionality
+  useEffect(() => {
+    if (isHovered || isScrollControlled) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      return;
+    }
+
+    const slideCount = aboutSlides.length;
+    intervalRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % slideCount);
+    }, 3000); // 3 seconds per slide
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [isHovered, isScrollControlled]); // Removed aboutSlides.length from dependencies
+
+  const activeSlide = aboutSlides[activeIndex];
+  const Icon = activeSlide.icon;
 
   return (
-    <section
-      id="about"
+    <section 
       ref={sectionRef}
+      id="about" 
       className="relative"
-      style={{ height: `${aboutSlides.length * 100}vh` }}
+      style={{ height: `${totalHeight}vh` }}
     >
-      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 md:px-6">
+      {/* Sticky viewport that fills screen */}
+      <div className="sticky top-0 w-full h-screen overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 md:px-12 h-full flex flex-col lg:flex-row">
           
-          {/* Section Header */}
-          <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-              About
-            </p>
-            <h2 className="mt-2 text-4xl font-bold text-slate-900 dark:text-white md:text-5xl">
-              Glimvia at a glance
-            </h2>
-          </div>
-          
-          <div className="flex w-full items-center gap-8">
-            {/* Left Column: Cards - 65% width */}
-            <div 
-              className="relative h-[65vh] basis-[65%] overflow-hidden"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-            >
-              <motion.div className="flex h-full" style={{ x }}>
-                {aboutSlides.map((slide) => {
-                  const SlideIcon = slide.icon;
-                  return (
-                    <motion.article 
-                      key={slide.id} 
-                      className="relative h-full w-full shrink-0 px-3"
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.3 }}
+          {/* Left Column: Header + Cards + Dots */}
+          <div 
+            className="flex-1 pr-0 lg:pr-12 pt-16 pb-4 md:py-20 flex flex-col"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            {/* Header Section */}
+            <div className="mb-6 md:mb-8 flex-shrink-0">
+              <p className="text-xs uppercase tracking-wider opacity-60 mb-2">
+                About
+              </p>
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-3 md:mb-4">
+                Glimvia at a glance
+              </h2>
+              <p className="text-sm md:text-sm text-gray-600 dark:text-gray-300 max-w-xl">
+                Experience the power of Apache Superset redesigned for mobile. See how we've reimagined analytics for the modern, mobile-first world.
+              </p>
+            </div>
+
+            {/* Cards - Flexible height */}
+            <div className="flex-1 flex items-center mb-6 md:mb-8">
+              <div className="relative w-full h-72 md:h-60">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute inset-0"
+                  >
+                    <motion.div 
+                      whileHover={{ 
+                        y: -8,
+                        boxShadow: "0 20px 40px rgba(59, 130, 246, 0.15)"
+                      }}
+                      className="h-full p-6 md:p-8 rounded-2xl bg-white/70 dark:bg-gray-900/60 backdrop-blur-lg shadow-xl border border-gray-200/20 dark:border-white/10"
                     >
-                      <div className="flex h-full w-full flex-col justify-center rounded-2xl bg-white dark:bg-slate-800 p-10 shadow-xl ring-1 ring-gray-200 dark:ring-white/10">
-                        <div className="mb-6 flex items-center gap-4">
-                          <motion.span 
-                            className="inline-flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-sky-100 via-violet-100 to-pink-100 dark:from-sky-900/30 dark:via-violet-900/30 dark:to-pink-900/30"
-                            whileHover={{ rotate: 360 }}
-                            transition={{ duration: 0.5 }}
-                          >
-                            <SlideIcon className="size-6 text-slate-700 dark:text-slate-200" />
-                          </motion.span>
-                          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                            {slide.title}
-                          </span>
+                      <div className="flex items-center gap-3 mb-4 md:mb-6">
+                        <div className="w-12 md:w-12 h-12 md:h-12 rounded-xl bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 flex items-center justify-center">
+                          <Icon className="w-6 md:w-6 h-6 md:h-6 text-blue-600 dark:text-blue-400" />
                         </div>
-                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white lg:text-4xl">
-                          {slide.title}
-                        </h3>
-                        <p className="mt-5 text-lg leading-relaxed text-slate-600 dark:text-slate-300 lg:text-xl">
-                          {slide.body}
-                        </p>
                       </div>
-                    </motion.article>
-                  );
-                })}
-              </motion.div>
-              
-              {/* Progress dots */}
-              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
-                {aboutSlides.map((_, i) => (
-                  <motion.button
-                    key={i}
-                    onClick={() => {
-                      setCurrentIndex(i);
-                      animate(x, `-${100 * i}%`, { duration: 0.5 });
-                    }}
-                    className={`h-2 rounded-full transition-all duration-500 ${
-                      i === currentIndex 
-                        ? "w-10 bg-gradient-to-r from-sky-400 to-violet-400" 
-                        : "w-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
-                    }`}
-                    whileHover={{ scale: 1.2 }}
-                  />
-                ))}
+                      <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 text-gray-900 dark:text-white">
+                        {activeSlide.title}
+                      </h3>
+                      <p className="text-base md:text-base leading-relaxed opacity-80 text-gray-700 dark:text-gray-300">
+                        {activeSlide.body}
+                      </p>
+                    </motion.div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
 
-            {/* Right Column: Phone - 35% width */}
-            <div className="relative hidden h-full basis-[35%] items-center justify-center py-8 md:flex">
-              <motion.div 
-                className="h-full max-h-[calc(100vh-12rem)] w-auto"
-                style={{ rotate: 5 }}
-                whileHover={{ 
-                  scale: 1.05,
-                  rotate: 3,
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                <PhoneMock
-                  screens={aboutSlides.map((s) => ({ 
-                    id: s.id, 
-                    title: s.title, 
-                    shot: s.image
-                  }))}
-                  activeIndex={currentIndex}
-                  className="h-full"
+            {/* Navigation Dots - Always visible at bottom */}
+            <div className="flex justify-center gap-2 md:gap-3 flex-shrink-0">
+              {aboutSlides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveIndex(i)}
+                  className={clsx(
+                    "h-2 md:h-3 rounded-full transition-all duration-300 border-2 border-transparent hover:border-blue-300",
+                    activeIndex === i 
+                      ? "w-8 md:w-10 bg-gradient-to-r from-blue-500 to-purple-500 shadow-lg" 
+                      : "w-2 md:w-3 bg-gray-400 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-500"
+                  )}
                 />
-              </motion.div>
+              ))}
             </div>
+          </div>
+
+          {/* Right Column: Phone Mockup - Hidden on mobile */}
+          <div className="hidden lg:flex w-96 h-full items-center justify-center">
+            <motion.div
+              style={{ 
+                transform: "rotate(8deg)",
+                transformOrigin: "center center"
+              }}
+              whileHover={{ 
+                scale: 1.02,
+                rotate: 5
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className="h-[70vh] max-h-[600px] w-full max-w-xs"
+            >
+              <PhoneMock
+                screens={aboutSlides.map(s => ({ 
+                  id: s.id, 
+                  title: s.title, 
+                  shot: s.image 
+                }))}
+                activeIndex={activeIndex}
+                className="h-full"
+              />
+            </motion.div>
           </div>
         </div>
       </div>

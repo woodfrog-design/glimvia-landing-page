@@ -1,4 +1,13 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react'],
+  },
+  images: {
+    formats: ['image/webp', 'image/avif'],
+  },
+}
 
-export default nextConfig;
+export default nextConfig
