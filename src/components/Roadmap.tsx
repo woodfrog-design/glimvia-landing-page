@@ -208,22 +208,16 @@ export default function Roadmap() {
                 Our network is constantly expanding. Help us chart the next stations on this journey.
               </p>
               
-              {showThankYou ? (
-                <div className="glass p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30">
-                  <div className="flex items-center justify-center gap-2 text-green-700 dark:text-green-300">
-                    <CheckCircle2 size={20} />
-                    <span className="font-medium">Thanks for your suggestion!</span>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  onClick={handleSuggestRoute}
-                  disabled={isSubmitting}
-                  className="glow-cta cta-shine rounded-full px-4 py-2 text-sm transition shadow-sm hover:opacity-95 active:scale-[.98] font-medium disabled:opacity-50 bg-slate-900 text-white dark:bg-white dark:text-slate-900"
-                >
-                  {isSubmitting ? "Submitting..." : "Suggest Route"}
-                </button>
-              )}
+              <a 
+  href="/suggestion"
+  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:opacity-95 transition text-sm font-medium"
+>
+  <span>Share Your Ideas</span>
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M7 17L17 7" />
+    <path d="M7 7h10v10" />
+  </svg>
+</a>
             </div>
           </div>
         </div>

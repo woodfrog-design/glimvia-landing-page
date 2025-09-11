@@ -99,59 +99,59 @@
 //         {/* Clean divider */}
 //         <div className="w-full h-px bg-slate-200 dark:bg-slate-700 mb-6" />
 
-//         {/* Attribution row - Left/Right layout */}
-//         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+//         {/* Attribution row - Side by side layout with responsive logos */}
+//         <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-6">
           
-//           {/* Left: Woodfrog attribution with logo */}
-//           <div className="flex items-center gap-3">
+//           {/* Left: Woodfrog attribution with responsive logo */}
+//           <div className="flex flex-col items-center sm:items-start">
 //             <a 
 //               href="https://woodfrog.tech" 
 //               target="_blank" 
 //               rel="noopener noreferrer"
-//               className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+//               className="flex flex-col items-center sm:items-start gap-3 hover:opacity-80 transition-opacity"
 //             >
-//               <div className="w-8 h-8 flex items-center justify-center">
-//                 {/* Context-aware Woodfrog logo */}
+//               <div className="w-32 h-16 sm:w-48 sm:h-24 flex items-center justify-center">
+//                 {/* Context-aware Woodfrog logo - responsive size */}
 //                 <img 
 //                   src="/Woodfrog-logo-light.svg" 
 //                   alt="Woodfrog Tech Logo"
-//                   className="w-8 h-8 object-contain dark:hidden"
+//                   className="w-32 h-16 sm:w-48 sm:h-24 object-contain dark:hidden"
 //                 />
 //                 <img 
 //                   src="/Woodfrog-logo-dark.svg" 
 //                   alt="Woodfrog Tech Logo"
-//                   className="w-8 h-8 object-contain hidden dark:block"
+//                   className="w-32 h-16 sm:w-48 sm:h-24 object-contain hidden dark:block"
 //                 />
 //               </div>
-//               <div>
+//               <div className="text-center sm:text-left">
 //                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Woodfrog Tech</p>
 //                 <p className="text-xs text-slate-500 dark:text-slate-500">Software Development</p>
 //               </div>
 //             </a>
 //           </div>
 
-//           {/* Right: Apache Superset disclaimer with logo */}
-//           <div className="flex items-center gap-3">
+//           {/* Right: Apache Superset disclaimer with responsive logo */}
+//           <div className="flex flex-col items-center sm:items-end">
 //             <a 
 //               href="https://superset.apache.org/" 
 //               target="_blank" 
 //               rel="noopener noreferrer"
-//               className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+//               className="flex flex-col items-center sm:items-end gap-3 hover:opacity-80 transition-opacity"
 //             >
-//               <div className="w-8 h-8 flex items-center justify-center">
-//                 {/* Context-aware Apache Superset logo */}
+//               <div className="w-32 h-16 sm:w-48 sm:h-24 flex items-center justify-center">
+//                 {/* Context-aware Apache Superset logo - responsive size */}
 //                 <img 
 //                   src="/superset-logo-horiz-light.svg" 
 //                   alt="Apache Superset Logo"
-//                   className="w-8 h-8 object-contain dark:hidden"
+//                   className="w-32 h-16 sm:w-48 sm:h-24 object-contain dark:hidden"
 //                 />
 //                 <img 
 //                   src="/superset-logo-horiz-dark.svg" 
 //                   alt="Apache Superset Logo"
-//                   className="w-8 h-8 object-contain hidden dark:block"
+//                   className="w-32 h-16 sm:w-48 sm:h-24 object-contain hidden dark:block"
 //                 />
 //               </div>
-//               <div className="text-right">
+//               <div className="text-center sm:text-right">
 //                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Powered by Apache Superset</p>
 //                 <p className="text-xs text-slate-500 dark:text-slate-500">Independent client, not affiliated</p>
 //               </div>
@@ -183,6 +183,7 @@
 // }
 
 
+
 export default function Footer() {
   return (
     <footer className="relative mt-16">
@@ -212,9 +213,9 @@ export default function Footer() {
               <h4 className="font-semibold text-slate-900 dark:text-white mb-3 text-sm">Product</h4>
               <nav className="space-y-2">
                 {[
-                  { label: "Features", href: "#features" },
-                  { label: "Experience", href: "#experience" },
-                  { label: "Roadmap", href: "#roadmap" },
+                  { label: "Features", href: "/#features" },
+                  { label: "Experience", href: "/#experience" },
+                  { label: "Roadmap", href: "/#roadmap" },
                   { 
                     label: "Tech Specs", 
                     href: "https://www.notion.so/glimvia-technical-specification-document-v1-0-2602428418a880c098e5ed4de7269ee9",
@@ -243,9 +244,9 @@ export default function Footer() {
               <h4 className="font-semibold text-slate-900 dark:text-white mb-3 text-sm">Resources</h4>
               <nav className="space-y-2">
                 {[
-                  { label: "FAQ", href: "#faq" },
+                  { label: "FAQ", href: "/#faq" },
                   { label: "Support", href: "/support" },
-                  { label: "Download", href: "#download" }
+                  { label: "Contact", href: "/contact" }
                 ].map((link) => (
                   <a 
                     key={link.label}
@@ -262,7 +263,7 @@ export default function Footer() {
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-white mb-3 text-sm">Company</h4>
               <nav className="space-y-2">
-                <a href="#about" className="block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                <a href="/#about" className="block text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                   About
                 </a>
                 <a 
@@ -344,8 +345,16 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom: Centered copyright */}
+        {/* Legal links and copyright */}
         <div className="text-center">
+          <div className="flex items-center justify-center gap-6 text-sm text-slate-500 dark:text-slate-500 mb-4">
+            <a href="/privacy" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+              Privacy Notice
+            </a>
+            <a href="/terms" className="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+              Terms & Conditions
+            </a>
+          </div>
           <div className="flex items-center justify-center gap-4 text-sm text-slate-500 dark:text-slate-500">
             <span>© {new Date().getFullYear()} Glimvia. All rights reserved.</span>
             <div className="flex items-center gap-1">

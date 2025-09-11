@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 
 const LINKS = [
-  { label: "About", href: "#about" },
-  { label: "Features", href: "#features" },
-  { label: "Experience", href: "#experience" },
+  { label: "About", href: "/#about" },
+  { label: "Features", href: "/#features" },
+  { label: "Experience", href: "/#experience" },
 ];
 
 export default function Navbar() {
@@ -113,7 +113,7 @@ export default function Navbar() {
         onMouseLeave={() => { overNavRef.current = false; armIdleTimer(); }}
       >
         <nav className="flex items-center justify-between gap-3">
-          <a ref={brandRef} href="#cta" className="font-semibold tracking-tight text-sm sm:text-base" aria-label="Glimvia — back to top">
+          <a ref={brandRef} href="/" className="font-semibold tracking-tight text-sm sm:text-base" aria-label="Glimvia — back to home">
             Glimvia
           </a>
           <ul className={cn("hidden md:flex items-center justify-center gap-5 lg:gap-7 text-sm transition-opacity", collapsedIdle && "opacity-0 pointer-events-none")}>
@@ -126,7 +126,7 @@ export default function Navbar() {
             ))}
           </ul>
           <div className={cn("hidden md:flex items-center gap-2 transition-opacity", collapsedIdle && "opacity-0 pointer-events-none")}>
-            <a href="#download" className={ctaClass}>Get the app</a>
+            <a href="/#download" className={ctaClass}>Get the app</a>
             <button
               type="button"
               aria-label="Toggle theme"
@@ -190,7 +190,7 @@ export default function Navbar() {
             </button>
           </div>
           <div className="mt-6">
-            <a href="#download" onClick={() => setMobileOpen(false)} className={cn("inline-block", ctaClass)}>
+            <a href="/#download" onClick={() => setMobileOpen(false)} className={cn("inline-block", ctaClass)}>
               Get the app
             </a>
           </div>
