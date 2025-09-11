@@ -50,10 +50,5 @@ jobs:
         overwrites-pull-request-comment: true
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-<<<<<<< HEAD
-        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      timeout-minutes: 10
-=======
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_PROJECT_ID }}
       timeout-minutes: 10
->>>>>>> 752e712dcd5902ceb6803b7d0866f5cecde9f8d5

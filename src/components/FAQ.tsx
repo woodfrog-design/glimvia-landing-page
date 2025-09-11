@@ -1,76 +1,220 @@
-// "use client";
-// import { useEffect, useState } from "react";
+"use client";
 
-// const Q = [
-//   ["What is Glimvia?","Glimvia is a mobile application designed to help clients easily view Apache Superset dashboards on their mobile devices. It provides a simple, mobile-friendly interface to access dashboards anytime, anywhere."],
-//   ["I cannot log in. What should I do?","Make sure you have the correct username, password, and server URL; check your internet; if it still fails, contact your admin to verify Superset server access."],
-//   ["My dashboard is not loading or shows a blank screen.","Ensure a stable internet connection, refresh, log out/in, save charts from Superset, confirm the dashboard is active."],
-//   ["Why am I getting an “Invalid Credentials” error?","Double-check username/password; ensure the Superset instance URL is correct; reset via your org’s admin if needed."],
-//   ["How do I switch between dashboards?","After logging in, go to Dashboard View or Table View, then select a dashboard."],
-//   ["Can I use Glimvia on desktop?","No — Glimvia is mobile-only for a lightweight, optimized experience. Use Superset’s web app on desktop."],
-//   ["The app logs me out automatically. Why?","Security timeout after inactivity. Log in again to continue."],
-//   ["How can I see info about the app and my account?","Navigate to About App & User from the menu to see version and user details."],
-//   ["What should I do if the app crashes?","Restart the app; if it persists, clear cache/data; then contact support with device details and app version."],
-//   ["How do I share a dashboard?","Open the dashboard, tap Share at the top, copy the link, and send it. The recipient opens it in the Superset instance."]
-// ];
+import { useState } from "react";
+import { ChevronDown, HelpCircle, Search, Tag } from "lucide-react";
 
-// export default function FAQ(){
-//   const [open,setOpen]=useState<number[]>([]);
-//   useEffect(()=>{ if(window.matchMedia("(min-width:768px)").matches){ setOpen(Q.map((_,i)=>i)); } },[]);
-//   const toggle=(i:number)=>setOpen(prev=>prev.includes(i)?prev.filter(x=>x!==i):[...prev,i]);
-//   return (
-//     <section id="faq" className="max-w-6xl mx-auto px-4 md:px-6 py-16 md:py-24">
-//       <h2 className="text-3xl md:text-4xl font-semibold">FAQ</h2>
-//       <div className="mt-6 space-y-3">
-//         {Q.map(([q,a],i)=>(
-//           <div key={i} className="glass">
-//             <button
-//               className="w-full text-left px-5 py-4 flex items-center justify-between"
-//               aria-expanded={open.includes(i)}
-//               aria-controls={`faq-${i}`}
-//               onClick={()=>toggle(i)}
-//             >
-//               <span className="font-semibold">{q}</span>
-//               <span className="text-slate-500">{open.includes(i)?"–":"+"}</span>
-//             </button>
-//             <div id={`faq-${i}`} className={`px-5 pb-5 text-slate-700 dark:text-slate-300 ${open.includes(i)?"block":"hidden"}`}>{a}</div>
-//           </div>
-//         ))}
-//       </div>
-//     </section>
-//   );
-// }
 const faqs = [
-  ["What is Glimvia?","Glimvia is a mobile application designed to help clients easily view Apache Superset dashboards on their mobile devices."],
-  ["I cannot log in. What should I do?","Check the username, password, and server URL. Verify internet. If it still fails, ask your admin to confirm Superset access."],
-  ["My dashboard is not loading or shows a blank screen.","Ensure a stable connection. Refresh the view. If it continues, log out and back in, save charts in Superset, and confirm the dashboard is active."],
-  ["Why am I getting an “Invalid Credentials” error?","Double-check your credentials and Superset URL; reset password via your organization’s admin if needed."],
-  ["How do I switch between dashboards?","After logging in, go to Dashboard or Table view and select the dashboard."],
-  ["Can I use Glimvia on desktop?","No. Glimvia is mobile-only for a lightweight, optimized experience. Use Superset’s web app for desktop."],
-  ["The app logs me out automatically. Why?","For security after long inactivity. Log in again."],
-  ["How can I see information about the app and my account?","Open “About App & User” in the menu to see app version and user details."],
-  ["What should I do if the app crashes?","Restart the app. If it continues, clear cache/data and contact support with device details and app version."],
-  ["How do I copy or share a dashboard?","Open the dashboard, tap Share at the top, copy the link, and send it (recipient opens it in the Superset instance)."],
+  {
+    question: "What is Glimvia?",
+    answer: "Glimvia is a mobile application designed to help clients easily view Apache Superset dashboards on their mobile devices. It provides a simple, mobile-friendly interface to access dashboards anytime, anywhere.",
+    category: "General",
+    tags: ["basics", "overview"]
+  },
+  {
+    question: "I cannot log in. What should I do?",
+    answer: "Check the username, password, and server URL. Verify your internet connection. If it still fails, ask your admin to confirm Superset access permissions.",
+    category: "Authentication",
+    tags: ["login", "troubleshooting"]
+  },
+  {
+    question: "My dashboard is not loading or shows a blank screen.",
+    answer: "Ensure a stable connection. Refresh the view. If it continues, log out and back in, save charts in Superset, and confirm the dashboard is active.",
+    category: "Technical",
+    tags: ["dashboard", "loading", "troubleshooting"]
+  },
+  {
+    question: "Why am I getting an \"Invalid Credentials\" error?",
+    answer: "Double-check your credentials and Superset URL. Reset password via your organization's admin if needed.",
+    category: "Authentication",
+    tags: ["credentials", "error", "troubleshooting"]
+  },
+  {
+    question: "How do I switch between dashboards?",
+    answer: "After logging in, go to Dashboard or Table view and select the dashboard you want to access.",
+    category: "Navigation",
+    tags: ["dashboard", "navigation"]
+  },
+  {
+    question: "Can I use Glimvia on desktop?",
+    answer: "No. Glimvia is mobile-only for a lightweight, optimized experience. Use Superset's web app for desktop access.",
+    category: "General",
+    tags: ["platform", "desktop", "mobile"]
+  },
+  {
+    question: "The app logs me out automatically. Why?",
+    answer: "This is a security feature after periods of inactivity. Simply log in again to continue using the app.",
+    category: "Security",
+    tags: ["logout", "security", "timeout"]
+  },
+  {
+    question: "How can I see information about the app and my account?",
+    answer: "Navigate to \"About App & User\" from the menu to see app version and user details.",
+    category: "Navigation",
+    tags: ["account", "version", "info"]
+  },
+  {
+    question: "What should I do if the app crashes?",
+    answer: "Restart the app. If it continues, clear cache/data and contact support with device details and app version.",
+    category: "Technical",
+    tags: ["crash", "troubleshooting", "support"]
+  },
+  {
+    question: "How do I copy or share a dashboard?",
+    answer: "Open the dashboard, tap Share at the top, copy the link, and send it. The recipient opens it in the Superset instance.",
+    category: "Features",
+    tags: ["share", "dashboard", "collaboration"]
+  }
 ];
 
-export default function FAQ(){
+const categories = ["All", ...Array.from(new Set(faqs.map(faq => faq.category)))];
+
+export default function FAQ() {
+  const [openItems, setOpenItems] = useState<number[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const toggleItem = (index: number) => {
+    setOpenItems(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+
+  const filteredFaqs = faqs.filter(faq => {
+    const matchesCategory = selectedCategory === "All" || faq.category === selectedCategory;
+    const matchesSearch = searchTerm === "" || 
+      faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      faq.answer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      faq.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    return matchesCategory && matchesSearch;
+  });
+
   return (
     <section id="faq" data-reveal className="relative max-w-4xl mx-auto px-4 md:px-6 py-16 md:py-24">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 mb-8">
         <div className="hr-accent w-14 rounded-full" />
-        <h2 className="text-2xl md:text-3xl font-semibold">FAQ</h2>
+        <h2 className="text-2xl md:text-3xl font-semibold">Frequently Asked Questions</h2>
       </div>
 
-      <div className="mt-6 divide-y divide-black/10 dark:divide-white/15 rounded-2xl overflow-hidden">
-        {faqs.map(([q,a],i)=>(
-          <details key={i} className="glass open:!bg-white/16 dark:open:!bg-black/25">
-            <summary className="cursor-pointer list-none px-5 py-4 font-medium flex items-center justify-between">
-              <span>{q}</span>
-              <span className="text-slate-500">+</span>
-            </summary>
-            <div className="px-5 pb-5 text-slate-700 dark:text-slate-300">{a}</div>
-          </details>
-        ))}
+      <div className="mb-6">
+        <p className="text-slate-700 dark:text-slate-300 text-lg mb-6">
+          Find quick answers to common questions about using Glimvia.
+        </p>
+
+        {/* Search and Filter Controls */}
+        <div className="space-y-4">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search questions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-lg glass outline-none ring-1 ring-black/10 dark:ring-white/15 focus:ring-2 focus:ring-blue-500/50 transition-all"
+            />
+          </div>
+
+          {/* Category Filter */}
+          <div className="flex flex-wrap gap-2">
+            {categories.map(category => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+                  selectedCategory === category
+                    ? 'bg-blue-500 text-white shadow-lg'
+                    : 'glass hover:bg-white/60 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* FAQ Items */}
+      <div className="space-y-2">
+        {filteredFaqs.length > 0 ? (
+          filteredFaqs.map((faq, index) => {
+            const originalIndex = faqs.indexOf(faq);
+            const isOpen = openItems.includes(originalIndex);
+            
+            return (
+              <div key={originalIndex} className="glass rounded-xl overflow-hidden">
+                <button
+                  onClick={() => toggleItem(originalIndex)}
+                  className="w-full text-left p-5 flex items-center justify-between hover:bg-white/60 dark:hover:bg-white/5 transition-all duration-200 group"
+                  aria-expanded={isOpen}
+                >
+                  <div className="flex-1 pr-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <HelpCircle className="w-4 h-4 text-blue-500" />
+                      <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+                        {faq.category}
+                      </span>
+                    </div>
+                    <h3 className="font-semibold text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {faq.question}
+                    </h3>
+                  </div>
+                  <ChevronDown className={`w-5 h-5 text-slate-400 transform transition-transform duration-200 ${
+                    isOpen ? 'rotate-180' : ''
+                  }`} />
+                </button>
+                
+                {isOpen && (
+                  <div className="px-5 pb-5 border-t border-black/5 dark:border-white/10">
+                    <div className="pt-4">
+                      <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-3">
+                        {faq.answer}
+                      </p>
+                      
+                      {/* Tags */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Tag className="w-3 h-3 text-slate-400" />
+                        {faq.tags.map(tag => (
+                          <span
+                            key={tag}
+                            className="px-2 py-1 text-xs rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <div className="text-center py-12">
+            <div className="glass p-8 rounded-xl">
+              <HelpCircle className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <h3 className="font-semibold text-lg mb-2">No questions found</h3>
+              <p className="text-slate-600 dark:text-slate-400">
+                Try adjusting your search or category filter.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Help Footer */}
+      <div className="mt-12 text-center">
+        <div className="glass p-6 rounded-xl">
+          <h3 className="font-semibold text-lg mb-2">Still need help?</h3>
+          <p className="text-slate-700 dark:text-slate-300 mb-4">
+            Can't find what you're looking for? Our support team is here to help.
+          </p>
+          <button className="px-6 py-3 rounded-full bg-gradient-to-r from-accent-1 to-accent-2 text-white hover:from-accent-2 hover:to-accent-3 hover:scale-105 transition-all duration-200 shadow-lg">
+            Contact Support
+          </button>
+        </div>
       </div>
     </section>
   );
