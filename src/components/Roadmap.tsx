@@ -210,7 +210,7 @@ export default function Roadmap() {
               
               <a 
   href="/suggestion"
-  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:opacity-95 transition text-sm font-medium"
+  className="inline-flex items-center cta-shine active:scale-[.98] gap-2 px-6 py-3 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:opacity-95 transition text-sm font-medium"
 >
   <span>Share Your Ideas</span>
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
