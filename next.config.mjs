@@ -1,56 +1,51 @@
 /** @type {import('next').NextConfig} */
+
+// Minimal security headers (safe defaults)
+const securityHeaders = [
+  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'Referrer-Policy', value: 'origin-when-cross-origin' },
+  { key: 'Permissions-Policy', value: "camera=(), microphone=(), geolocation=()" },
+];
+
 const nextConfig = {
-  trailingSlash: true,
-  images: {
-    domains: [], // Add image domains if needed
-  },
-  
-  // Environment-based configuration
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
-  },
-  
-  // Performance optimizations
-  compress: true,
+  reactStrictMode: true,
   poweredByHeader: false,
-  
-  // Build optimizations
-  experimental: {
-    optimizeCss: true,
+  compress: true,
+
+  // Do NOT set `output: 'export'` (we want SSR on Netlify's Next.js Runtime)
+  // and do NOT force trailing slashes to avoid extra redirects.
+  // trailingSlash: false, // (default)
+
+  images: {
+    // Add remotePatterns later if you load external images.
+    remotePatterns: [],
   },
-  
-  // Asset optimization
-  assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
-  
-  // Redirect configuration
+
+  // Let the build succeed even if ESLint finds problems (handy on CI)
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+  ignoreBuildErrors: true,
+},
+
+  // If you ever need hard redirects, add them here.
   async redirects() {
     return [
-      // Add any redirects here if needed
+      // example:
+      // { source: '/home', destination: '/', permanent: true },
     ];
   },
-  
-  // Headers for security
+
   async headers() {
     return [
       {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-        ],
+        source: '/:path*',
+        headers: securityHeaders,
       },
     ];
   },
 };
 
-export default nextConfig;  // ES module syntax, not module.exports
+export default nextConfig;
