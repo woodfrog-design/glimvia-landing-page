@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import SupportTicket from "@/components/SupportTicket";
 import type { Metadata } from "next";
 

@@ -1,16 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
 
-/**
- * Loads GA4 and sends page_view on every route change.
- * We keep GA separate from Firebase; Firebase Analytics is optional (init’d lazily in firebase.js).
- */
-export default function AnalyticsListener() {
+function AnalyticsCore() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -27,6 +23,14 @@ export default function AnalyticsListener() {
     });
   }, [pathname, searchParams]);
 
+  return null;
+}
+
+/**
+ * Loads GA4 and sends page_view on every route change.
+ * We keep GA separate from Firebase; Firebase Analytics is optional (init'd lazily in firebase.js).
+ */
+export default function AnalyticsListener() {
   if (!GA_ID) return null;
 
   return (
@@ -57,6 +61,11 @@ export default function AnalyticsListener() {
           gtag('config', '${GA_ID}', { anonymize_ip: true });
         `}
       </Script>
+      
+      {/* Wrap the useSearchParams part in Suspense */}
+      <Suspense fallback={null}>
+        <AnalyticsCore />
+      </Suspense>
     </>
   );
 }

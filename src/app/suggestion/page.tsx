@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import SuggestionForm from "@/components/SuggestionForm";
 import type { Metadata } from "next";
 

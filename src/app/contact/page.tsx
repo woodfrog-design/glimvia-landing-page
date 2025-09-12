@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import ContactForm from "@/components/ContactForm";
 import type { Metadata } from "next";
 

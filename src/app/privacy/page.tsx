@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import PrivacyNotice from "@/components/PrivacyNotice";
 import type { Metadata } from "next";
 

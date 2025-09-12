@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import TermsAndConditions from "@/components/TermsAndConditions";
 import type { Metadata } from "next";
 
