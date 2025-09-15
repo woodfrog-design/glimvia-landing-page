@@ -1,224 +1,184 @@
 // "use client";
 
-// import { useEffect, useMemo, useState } from "react";
-// import { useTheme } from "next-themes";
-
-// type Device = "ios" | "android" | "desktop";
-
-// function detectDevice(ua?: string): Device {
-//   if (typeof navigator === "undefined" && !ua) return "desktop";
-//   const U = (ua ?? navigator.userAgent).toLowerCase();
-
-//   const isiOS =
-//     /iphone|ipod/.test(U) ||
-//     // iPadOS 13+ (reports "Mac" but has touch)
-//     (/(ipad|macintosh)/.test(U) &&
-//       typeof navigator !== "undefined" &&
-//       "maxTouchPoints" in navigator &&
-//       (navigator as any).maxTouchPoints > 1);
-
-//   if (isiOS) return "ios";
-//   if (/android/.test(U)) return "android";
-//   return "desktop";
-// }
-
 // type Props = {
-//   iosStoreUrl?: string;         // e.g. https://apps.apple.com/app/id1234567890
-//   androidStoreUrl?: string;     // e.g. https://play.google.com/store/apps/details?id=com.woodfrog.glimvia
-//   appSchemeUrl?: string;        // e.g. glimvia://open   (optional deep link)
-//   mobileSingleButton?: boolean; // show only relevant store on mobile (default true)
-//   utm?: string;                 // e.g. utm_source=site&utm_medium=cta&utm_campaign=download
-// };
-
-// const DEFAULTS = {
-//   iosStoreUrl: "https://apps.apple.com/app/________IOS_APP_ID________",
-//   androidStoreUrl: "https://play.google.com/store/apps/details?id=________ANDROID_PACKAGE________",
+//   iosStoreUrl?: string;
+//   androidStoreUrl?: string;
 // };
 
 // export default function SmartStoreButtons({
-//   iosStoreUrl = DEFAULTS.iosStoreUrl,
-//   androidStoreUrl = DEFAULTS.androidStoreUrl,
-//   appSchemeUrl,
-//   mobileSingleButton = true,
-//   utm,
+//   iosStoreUrl,
+//   androidStoreUrl,
 // }: Props) {
-//   const { resolvedTheme } = useTheme(); // "light" | "dark"
-//   const [device, setDevice] = useState<Device>("desktop");
-
-//   useEffect(() => setDevice(detectDevice()), []);
-
-//   const urls = useMemo(() => {
-//     const withUtm = (url: string) => (utm ? (url.includes("?") ? `${url}&${utm}` : `${url}?${utm}`) : url);
-//     return {
-//       ios: withUtm(iosStoreUrl),
-//       android: withUtm(androidStoreUrl),
-//     };
-//   }, [iosStoreUrl, androidStoreUrl, utm]);
-
-//   const appleSrc =
-//     resolvedTheme === "dark"
-//       ? "/public/store-badges/apple-app-store-badge-white.svg".replace("/public", "")
-//       : "/public/store-badges/apple-app-store-badge-black.svg".replace("/public", "");
-//   const googleSrc = "/public/store-badges/google-play-badge.svg".replace("/public", "");
-
-//   function openSmart(target: "ios" | "android") {
-//     if (!appSchemeUrl) {
-//       window.location.href = target === "ios" ? urls.ios : urls.android;
-//       return;
-//     }
-//     const fallback = target === "ios" ? urls.ios : urls.android;
-//     const t = Date.now();
-//     window.location.href = appSchemeUrl;
-//     setTimeout(() => {
-//       if (Date.now() - t < 1500) window.location.href = fallback;
-//     }, 1200);
-//   }
-
-//   const AppleBadge = () => (
-//     <button
-//       onClick={() => openSmart("ios")}
-//       className="group relative inline-flex items-center justify-center px-4 py-3 bg-black hover:bg-neutral-900
-//                  rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95"
-//       aria-label="Download on the App Store"
-//     >
-//       <img src={appleSrc} alt="Download on the App Store" className="h-12 w-auto" draggable={false} />
-//       <div className="absolute inset-0 -skew-x-12 -translate-x-full group-hover:translate-x-full
-//                       bg-gradient-to-r from-transparent via-white/20 to-transparent
-//                       transition-transform duration-700 ease-out" />
-//     </button>
-//   );
-
-//   const GoogleBadge = () => (
-//     <button
-//       onClick={() => openSmart("android")}
-//       className="group relative rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95"
-//       aria-label="Get it on Google Play"
-//     >
-//       {/* neutral chip to keep contrast in dark mode; badge itself stays unmodified */}
-//       <div className="rounded-2xl bg-white/90 dark:bg-white/95 px-2 py-1">
-//         <img src={googleSrc} alt="Get it on Google Play" className="h-12 w-auto" draggable={false} />
-//       </div>
-//       <div className="pointer-events-none absolute inset-0 -skew-x-12 -translate-x-full group-hover:translate-x-full
-//                       bg-gradient-to-r from-transparent via-white/30 to-transparent
-//                       transition-transform duration-700 ease-out" />
-//     </button>
-//   );
-
-//   if (mobileSingleButton && (device === "ios" || device === "android")) {
-//     return (
-//       <div className="flex justify-center">
-//         {device === "ios" ? <AppleBadge /> : <GoogleBadge />}
-//       </div>
-//     );
-//   }
-
 //   return (
-//     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-//       <AppleBadge />
-//       <GoogleBadge />
+//     <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+//       {iosStoreUrl && (
+//         <a
+//           href={iosStoreUrl}
+//           target="_blank"
+//           rel="noopener noreferrer"
+//           className="inline-flex"
+//         >
+//           {/* Render both images, hide with dark/light classes to avoid hydration mismatch */}
+//           <img
+//             src="/store-badges/apple-app-store-badge-black.svg"
+//             alt="Download on the App Store"
+//             className="h-10 w-auto md:h-12 dark:hidden"
+//             draggable={false}
+//           />
+//           <img
+//             src="/store-badges/apple-app-store-badge-white.svg"
+//             alt="Download on the App Store"
+//             className="hidden h-10 w-auto md:h-12 dark:block"
+//             draggable={false}
+//           />
+//         </a>
+//       )}
+
+//       {androidStoreUrl && (
+//         <a
+//           href={androidStoreUrl}
+//           target="_blank"
+//           rel="noopener noreferrer"
+//           className="inline-flex"
+//         >
+//           <img
+//             src="/store-badges/google-play-badge.svg"
+//             alt="Get it on Google Play"
+//             className="h-10 w-auto md:h-12"
+//             draggable={false}
+//           />
+//         </a>
+//       )}
 //     </div>
 //   );
 // }
 
-
-// src/components/SmartStoreButtons.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useTheme } from "next-themes";
-
-type Device = "ios" | "android" | "desktop";
-
-function detectDevice(ua?: string): Device {
-  if (typeof navigator === "undefined" && !ua) return "desktop";
-  const U = (ua ?? navigator.userAgent).toLowerCase();
-  const isiOS =
-    /iphone|ipod/.test(U) ||
-    (/(ipad|macintosh)/.test(U) && "maxTouchPoints" in navigator && (navigator as any).maxTouchPoints > 1);
-  if (isiOS) return "ios";
-  if (/android/.test(U)) return "android";
-  return "desktop";
-}
-
-type Props = {
-  iosStoreUrl?: string;
-  androidStoreUrl?: string;
-  appSchemeUrl?: string;
-  mobileSingleButton?: boolean;
-  utm?: string;
-};
-
-const DEFAULTS = {
-  iosStoreUrl: "https://apps.apple.com/app/________IOS_APP_ID________",
-  androidStoreUrl: "https://play.google.com/store/apps/details?id=________ANDROID_PACKAGE________",
-};
 
 export default function SmartStoreButtons({
-  iosStoreUrl = DEFAULTS.iosStoreUrl,
-  androidStoreUrl = DEFAULTS.androidStoreUrl,
-  appSchemeUrl,
-  mobileSingleButton = true,
+  iosStoreUrl,
+  androidStoreUrl,
   utm,
-}: Props) {
-  const { resolvedTheme } = useTheme();
-  const [device, setDevice] = useState<Device>("desktop");
-  useEffect(() => setDevice(detectDevice()), []);
+  className = "",
+}: {
+  iosStoreUrl: string;
+  androidStoreUrl: string;
+  utm?: string;
+  className?: string;
+}) {
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [os, setOs] = useState<"ios" | "android" | "other" | null>(null);
+  const [isDark, setIsDark] = useState<boolean | null>(null);
 
-  const urls = useMemo(() => {
-    const withUtm = (url: string) => (utm ? (url.includes("?") ? `${url}&${utm}` : `${url}?${utm}`) : url);
-    return { ios: withUtm(iosStoreUrl), android: withUtm(androidStoreUrl) };
-  }, [iosStoreUrl, androidStoreUrl, utm]);
-
-  const appleSrc =
-    resolvedTheme === "dark"
-      ? "/store-badges/apple-app-store-badge-white.svg"
-      : "/store-badges/apple-app-store-badge-black.svg";
-  const googleSrc = "/store-badges/google-play-badge.svg";
-
-  function openSmart(target: "ios" | "android") {
-    const fallback = target === "ios" ? urls.ios : urls.android;
-    if (!appSchemeUrl) {
-      window.location.href = fallback;
-      return;
+  // build URLs with optional UTM
+  const withUtm = (url: string) => {
+    if (!utm) return url;
+    try {
+      const u = new URL(url);
+      const add = new URLSearchParams(utm.startsWith("?") ? utm.slice(1) : utm);
+      add.forEach((v, k) => u.searchParams.set(k, v));
+      return u.toString();
+    } catch {
+      return url + (url.includes("?") ? "&" : "?") + (utm.startsWith("?") ? utm.slice(1) : utm);
     }
-    const t = Date.now();
-    window.location.href = appSchemeUrl;
-    setTimeout(() => {
-      if (Date.now() - t < 1500) window.location.href = fallback;
-    }, 1200);
+  };
+  const iosHref = useMemo(() => withUtm(iosStoreUrl), [iosStoreUrl, utm]);
+  const androidHref = useMemo(() => withUtm(androidStoreUrl), [androidStoreUrl, utm]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // viewport
+    const mq = window.matchMedia("(max-width: 767px)");
+    const updateMQ = () => setIsMobile(mq.matches);
+    updateMQ();
+    mq.addEventListener("change", updateMQ);
+
+    // OS
+    const ua = navigator.userAgent || "";
+    const isiOS = /iPad|iPhone|iPod/.test(ua) || (/(Macintosh|Mac OS X)/.test(ua) && "ontouchend" in window);
+    const isAndroid = /Android/.test(ua);
+    setOs(isiOS ? "ios" : isAndroid ? "android" : "other");
+
+    // theme (listen to class on <html>)
+    const html = document.documentElement;
+    const computeDark = () => html.classList.contains("dark");
+    const setDark = () => setIsDark(computeDark());
+    setDark();
+
+    const obs = new MutationObserver(setDark);
+    obs.observe(html, { attributes: true, attributeFilter: ["class"] });
+
+    return () => {
+      mq.removeEventListener("change", updateMQ);
+      obs.disconnect();
+    };
+  }, []);
+
+  const badgeSrc = {
+    app: isDark ? "/store-badges/apple-app-store-badge-white.svg" : "/store-badges/apple-app-store-badge-black.svg",
+    play: isDark ? "/store-badges/google-play-badge.svg" : "/store-badges/google-play-badge.svg",
+  };
+
+  const BadgeShell = ({ children }: { children?: React.ReactNode }) => (
+    <div className="inline-flex h-12 w-[184px] items-center justify-center rounded-xl bg-white/90 dark:bg-slate-900/80 ring-1 ring-black/5 dark:ring-white/10 shadow-sm dark:shadow-[0_2px_10px_rgba(0,0,0,0.35)] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-md">
+      {children ?? <div className="h-6 w-28 rounded bg-slate-300/40 dark:bg-slate-600/40" />}
+    </div>
+  );
+
+  const AppStoreBadge = () => (
+    <BadgeShell>
+      <img src={badgeSrc.app} alt="Download on the App Store" className="h-6 w-auto object-contain" />
+    </BadgeShell>
+  );
+
+  const PlayBadge = () => (
+    <BadgeShell>
+      <img src={badgeSrc.play} alt="Get it on Google Play" className="h-6 w-auto object-contain" />
+    </BadgeShell>
+  );
+
+  // MOBILE: single device-aware badge
+  if (isMobile) {
+    if (!os || isDark === null) return (
+      <div className={["flex items-center justify-center", className].join(" ")}>
+        <BadgeShell />
+      </div>
+    );
+    const isIOS = os === "ios";
+    const href = isIOS ? iosHref : androidHref;
+    const Badge = isIOS ? AppStoreBadge : PlayBadge;
+
+    return (
+      <div className={["flex flex-col items-center gap-3", className].join(" ")}>
+        <a href={href} rel="noopener noreferrer">
+          <Badge />
+        </a>
+        <p className="text-xs text-slate-600 dark:text-slate-400">
+          Also available on{" "}
+          <a href={isIOS ? androidHref : iosHref} className="underline decoration-slate-400/60 hover:decoration-slate-600 dark:decoration-slate-500/60">
+            {isIOS ? "Google Play" : "App Store"}
+          </a>
+        </p>
+      </div>
+    );
   }
 
-  // symmetric wrapper style for BOTH badges
-  const chipClass =
-    "inline-flex items-center justify-center rounded-2xl " +
-    "bg-white/92 dark:bg-white/95 ring-1 ring-black/10 shadow-sm " +
-    "px-3 py-2 hover:shadow-md transition-transform hover:scale-[1.02] active:scale-[.98]";
-  const imgClass = "h-10 w-auto md:h-12"; // equal visual height
-
-  const Apple = () => (
-    <button onClick={() => openSmart("ios")} aria-label="Download on the App Store" className={chipClass}>
-      <img src={appleSrc} alt="Download on the App Store" className={imgClass} draggable={false} />
-    </button>
-  );
-
-  const Google = () => (
-    <button onClick={() => openSmart("android")} aria-label="Get it on Google Play" className={chipClass}>
-      <img src={googleSrc} alt="Get it on Google Play" className={imgClass} draggable={false} />
-    </button>
-  );
-
-  if (mobileSingleButton && (device === "ios" || device === "android")) {
+  // DESKTOP: both, exact same sizing
+  if (isDark === null) {
     return (
-      <div className="flex justify-center">
-        {device === "ios" ? <Apple /> : <Google />}
+      <div className={["flex items-center justify-center gap-3 sm:gap-4", className].join(" ")}>
+        <BadgeShell /><BadgeShell />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-      <Apple />
-      <Google />
+    <div className={["flex items-center justify-center gap-3 sm:gap-4", className].join(" ")}>
+      <a href={iosHref} rel="noopener noreferrer"><AppStoreBadge /></a>
+      <a href={androidHref} rel="noopener noreferrer"><PlayBadge /></a>
     </div>
   );
 }
