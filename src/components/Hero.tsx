@@ -1,24 +1,123 @@
+// "use client";
+
+// import clsx from "clsx";
+// import { ArrowUpRight, Gift, Zap, Scaling } from "lucide-react";
+// import { FaApple, FaGooglePlay } from "react-icons/fa";
+
+// // The three points for the ticker
+// const TAGS = [
+//   { text: "Always free for core features", icon: <Gift size={16} /> },
+//   { text: "No sign-up hassle—start instantly", icon: <Zap size={16} /> },
+//   { text: "Easily extended to meet your unique needs", icon: <Scaling size={16} /> },
+// ];
+
+// export default function Hero() {
+//   // Added the new "glass-button" class for the dark mode fix
+//   const buttonClasses = "glow-cta cta-shine glass glass-button inline-flex items-center justify-center h-14 rounded-full px-6 text-[0.98rem] font-medium shadow-sm hover:opacity-95 active:scale-[.98]";
+
+//   return (
+//     <section id="cta" className="relative mx-auto min-h-screen max-w-6xl px-4 sm:px-6">
+//       <div className="flex h-screen flex-col items-center justify-center">
+//         <div className="hero-spot" />
+//         <h1 className="leading-[1.04] tracking-tight text-center">
+//           <span className="block title-gradient font-black text-[clamp(1.8rem,8vw,4.2rem)]">
+//             Apache Superset on Mobile.
+//           </span>
+//           <span className="block title-gradient font-semibold text-[clamp(1.7rem,7vw,3.6rem)]">
+//             Business Insights Anywhere.
+//           </span>
+//         </h1>
+
+//         <p className="mx-auto mt-8 max-w-3xl text-center text-[1.05rem] opacity-80">
+//           Your dashboards, KPIs and alerts now live in your pocket so decisions never have to wait.
+//         </p>
+        
+//         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+//           <a href="#" className={buttonClasses}>
+//             <FaApple size={18} />
+//             <span>Download on App&nbsp;Store</span>
+//           </a>
+//           <a href="#" className={buttonClasses}>
+//             <FaGooglePlay size={18} />
+//             <span>Get it on Google&nbsp;Play</span>
+//           </a>
+//           <a href="https://www.notion.so/glimvia-technical-specification-document-v1-0-2602428418a880c098e5ed4de7269ee9" target="_blank" rel="noopener noreferrer" className={buttonClasses}>
+//             <span>Technical Specifications</span>
+//             <ArrowUpRight size={16} className="opacity-70" />
+//           </a>
+//         </div>
+
+//         <div className="mx-auto mt-12 w-full max-w-5xl">
+//           <div className="ticker glass rounded-full py-3 px-4">
+//             <div className="ticker-track">
+//               {[...TAGS, ...TAGS].map((tag, index) => (
+//                 <div key={index} className="flex items-center gap-2 mx-4">
+//                   {tag.icon}
+//                   <span className="text-sm opacity-90 whitespace-nowrap">
+//                     {tag.text}
+//                   </span>
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// src/components/Hero.tsx
 "use client";
 
-import clsx from "clsx";
-import { ArrowUpRight, Gift, Zap, Scaling } from "lucide-react";
-import { FaApple, FaGooglePlay } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
+import { SiApple, SiGoogleplay } from "react-icons/si"; // brand-accurate icons
+import { detectDevice, smartNavigate } from "@/lib/smartStore";
 
-// The three points for the ticker
-const TAGS = [
-  { text: "Always free for core features", icon: <Gift size={16} /> },
-  { text: "No sign-up hassle—start instantly", icon: <Zap size={16} /> },
-  { text: "Easily extended to meet your unique needs", icon: <Scaling size={16} /> },
-];
+// Centralize these if you have them elsewhere
+const IOS_STORE_URL = "https://apps.apple.com/app/________IOS_APP_ID________";
+const ANDROID_STORE_URL =
+  "https://play.google.com/store/apps/details?id=________ANDROID_PACKAGE________";
+const TECH_SPECS_URL =
+  "https://www.notion.so/glimvia-technical-specification-document-v1-0-2602428418a880c098e5ed4de7269ee9";
+const APP_SCHEME = undefined;
+const HERO_UTM = "utm_source=hero&utm_medium=cta";
 
 export default function Hero() {
-  // Added the new "glass-button" class for the dark mode fix
-  const buttonClasses = "glow-cta cta-shine glass glass-button inline-flex items-center justify-center h-14 rounded-full px-6 text-[0.98rem] font-medium shadow-sm hover:opacity-95 active:scale-[.98]";
+  const [device, setDevice] = useState<"ios" | "android" | "desktop">("desktop");
+
+  useEffect(() => {
+    setDevice(detectDevice());
+  }, []);
+
+  const isMobile = device === "ios" || device === "android";
+  const isIOS = device === "ios";
+
+  const ctaBtn =
+    "glow-cta cta-shine glass glass-button inline-flex items-center justify-center h-14 rounded-full px-6 text-[0.98rem] font-medium shadow-sm hover:opacity-95 active:scale-[.98]";
+  // Ensures equal width on mobile
+  const mobileBtn = ctaBtn + " w-full max-w-[320px] justify-center";
+  const iconCls = "mr-2 h-[18px] w-[18px] opacity-90";
+
+  const handleMobileAppClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    if (!isMobile) return; // desktop: normal link behavior
+    e.preventDefault();
+    smartNavigate({
+      iosStoreUrl: IOS_STORE_URL,
+      androidStoreUrl: ANDROID_STORE_URL,
+      appSchemeUrl: APP_SCHEME,
+      utm: HERO_UTM,
+    });
+  };
 
   return (
     <section id="cta" className="relative mx-auto min-h-screen max-w-6xl px-4 sm:px-6">
       <div className="flex h-screen flex-col items-center justify-center">
         <div className="hero-spot" />
+
+        {/* Headline (unchanged) */}
         <h1 className="leading-[1.04] tracking-tight text-center">
           <span className="block title-gradient font-black text-[clamp(1.8rem,8vw,4.2rem)]">
             Apache Superset on Mobile.
@@ -31,38 +130,78 @@ export default function Hero() {
         <p className="mx-auto mt-8 max-w-3xl text-center text-[1.05rem] opacity-80">
           Your dashboards, KPIs and alerts now live in your pocket so decisions never have to wait.
         </p>
-        
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <a href="#" className={buttonClasses}>
-            <FaApple size={18} />
-            <span>Download on App&nbsp;Store</span>
-          </a>
-          <a href="#" className={buttonClasses}>
-            <FaGooglePlay size={18} />
-            <span>Get it on Google&nbsp;Play</span>
-          </a>
-          <a href="https://www.notion.so/glimvia-technical-specification-document-v1-0-2602428418a880c098e5ed4de7269ee9" target="_blank" rel="noopener noreferrer" className={buttonClasses}>
-            <span>Technical Specifications</span>
-            <ArrowUpRight size={16} className="opacity-70" />
-          </a>
-        </div>
 
-        <div className="mx-auto mt-12 w-full max-w-5xl">
-          <div className="ticker glass rounded-full py-3 px-4">
-            <div className="ticker-track">
-              {[...TAGS, ...TAGS].map((tag, index) => (
-                <div key={index} className="flex items-center gap-2 mx-4">
-                  {tag.icon}
-                  <span className="text-sm opacity-90 whitespace-nowrap">
-                    {tag.text}
-                  </span>
-                </div>
-              ))}
-            </div>
+        {/* Actions */}
+        <div className="mt-10 flex flex-col items-center gap-4">
+          {/* Desktop/tablet: BOTH app buttons + specs (original layout) */}
+          <div className="hidden md:flex flex-wrap items-center justify-center gap-4">
+            <a
+              href={IOS_STORE_URL || "/#download"}
+              className={ctaBtn}
+              onClick={handleMobileAppClick}
+            >
+              <SiApple className={iconCls} />
+              <span>Get the app on App Store</span>
+            </a>
+
+            <a
+              href={ANDROID_STORE_URL || "/#download"}
+              className={ctaBtn}
+              onClick={handleMobileAppClick}
+            >
+              <SiGoogleplay className={iconCls} />
+              <span>Get it on Google Play</span>
+            </a>
+
+            <a
+              href={TECH_SPECS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={ctaBtn}
+            >
+              <span>Technical Specifications</span>
+              <ArrowUpRight size={16} className="ml-2 opacity-70" />
+            </a>
+          </div>
+
+          {/* Mobile: ONE app button (device-specific) + specs + cross-platform note */}
+          <div className="md:hidden flex flex-col items-center gap-3 w-full px-4">
+            {isIOS ? (
+              <a
+                href={IOS_STORE_URL || "/#download"}
+                className={mobileBtn}
+                onClick={handleMobileAppClick}
+              >
+                <SiApple className={iconCls} />
+                <span>Get the app on App Store</span>
+              </a>
+            ) : (
+              <a
+                href={ANDROID_STORE_URL || "/#download"}
+                className={mobileBtn}
+                onClick={handleMobileAppClick}
+              >
+                <SiGoogleplay className={iconCls} />
+                <span>Get it on Google Play</span>
+              </a>
+            )}
+
+            <a
+              href={TECH_SPECS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={mobileBtn}
+            >
+              <span>Technical Specifications</span>
+              <ArrowUpRight size={16} className="ml-2 opacity-70" />
+            </a>
+
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 opacity-80">
+              Cross-platform: also available on {isIOS ? "Android" : "iOS"}.
+            </p>
           </div>
         </div>
       </div>
     </section>
   );
 }
-
